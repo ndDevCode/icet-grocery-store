@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="525.0" prefWidth="885.0" stylesheets="@css/globalStyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ItemViewController">
+    <children>
+      <AnchorPane prefHeight="520.0" prefWidth="850.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <MFXTextField fx:id="txtSearch" floatingText="Search Table" layoutX="224.0" layoutY="82.0" minHeight="-Infinity" prefHeight="50.0" prefWidth="200.0" />
+              <MFXTextField fx:id="txtUnitPrice" alignment="TOP_LEFT" floatingText="Unit Price" layoutX="26.0" layoutY="254.0" prefHeight="21.0" prefWidth="149.0" promptText="Enter Unit Price" />
+              <JFXTreeTableView fx:id="itemTable" layoutX="224.0" layoutY="142.0" prefHeight="355.0" prefWidth="600.0" style="-fx-border-color: black;" stylesheets="@css/globalStyles.css">
+                  <styleClass>
+                      <String fx:value="tree-table-cell" />
+                      <String fx:value="table-view" />
+                  </styleClass>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXTreeTableView>
+              <Label layoutX="362.0" layoutY="14.0" styleClass="content-pane-background" stylesheets="@css/globalStyles.css" text="  Items View  ">
+                  <font>
+                      <Font name="System Bold" size="20.0" />
+                  </font>
+                  <effect>
+                      <Glow />
+                  </effect>
+              </Label>
+              <MFXTextField fx:id="txtItemCode" alignment="TOP_LEFT" floatingText="Item Code" layoutX="26.0" layoutY="142.0" prefHeight="21.0" prefWidth="149.0" promptText="Enter Code" />
+              <MFXTextField fx:id="txtItemDesc" alignment="TOP_LEFT" floatingText="Description" layoutX="26.0" layoutY="198.0" prefHeight="21.0" prefWidth="149.0" promptText="Enter Desc" />
+              <MFXTextField fx:id="txtQtyOnHand" alignment="TOP_LEFT" floatingText="Qty On Hand" layoutX="26.0" layoutY="310.0" prefHeight="21.0" prefWidth="149.0" promptText="Enter Qty on hand" />
+              <MFXButton fx:id="btnSave" depthLevel="LEVEL1" layoutX="28.0" layoutY="396.0" onAction="#btnSaveOnAction" prefHeight="31.0" prefWidth="144.0" rippleAnimateShadow="true" rippleAnimationSpeed="0.5" rippleColor="#8e1ec5" text="Save Item">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </MFXButton>
+              <MFXButton fx:id="btnRefresh" alignment="CENTER" contentDisplay="CENTER" depthLevel="LEVEL1" layoutX="708.0" layoutY="83.0" onAction="#btnReloadOnAction" prefHeight="47.0" prefWidth="116.0" rippleAnimateShadow="true" rippleAnimationSpeed="0.5" rippleColor="#bb12e3" text="Refresh Table" textAlignment="RIGHT">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </MFXButton>
+              <MFXButton fx:id="btnUpdate" depthLevel="LEVEL1" layoutX="29.0" layoutY="443.0" onAction="#btnUpdateOnAction" prefHeight="31.0" prefWidth="144.0" rippleAnimateShadow="true" rippleAnimationSpeed="0.5" rippleColor="#8e1ec5" text="Update Item">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </MFXButton>
+         </children>
+      </AnchorPane>
+    </children>
+   <styleClass>
+      <String fx:value="content-pane-background" />
+      <String fx:value="background-radius" />
+   </styleClass>
+</AnchorPane>

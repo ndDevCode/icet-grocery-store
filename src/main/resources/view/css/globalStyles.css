@@ -1,0 +1,62 @@
+
+.header-background{
+    -fx-background-color: linear-gradient(to right, #0cbaba 0%, #380036 74%);
+}
+
+.header-title{
+    -fx-text-fill: #ffffff;
+}
+
+.header-date-time{
+    -fx-text-fill: #d1d1e3;
+}
+
+.side-panel-background{
+    -fx-background-color: linear-gradient(to bottom, #0cbaba 0%, #e0d2c7 74%);
+    -fx-background-radius: 0 0 20 0;
+}
+
+.side-menu-option:hover{
+    -fx-font-weight: bolder;
+    -fx-border-color: #fff;
+    -fx-border-width: 0 0 0 5;
+}
+
+.side-panel-toggle-bg-img{
+    -fx-background-image: url("../../assets/menu.png");
+    -fx-background-size: cover ;
+}
+
+.content-pane-background{
+    -fx-background-color: linear-gradient(to top, rgba(147, 37, 239, 0.51) 0%, #e4e4ec 74%);
+}
+
+/*JFX Table CSS Styling*/
+
+.tree-table-cell {
+    -fx-alignment: center ;
+}
+
+/*-----------------------------*/
+
+.table-view {
+    -fx-table-color: rgba(217, 0, 255, 0.4);
+    -fx-table-rippler-color: rgb(136, 45, 236);
+}
+
+.place-order-btn{
+    -fx-background-color: linear-gradient(to left bottom, #a4508b 0%, #5f0a87 74%);
+}
+
+.add-to-cart-btn{
+    -fx-background-color: linear-gradient(to left bottom, #772f1a 0%, #f2a65a 74%);
+
+}
+
+.background-radius{
+    -fx-background-radius: 0 0 20 0;
+}
+
+.btn-hover:hover{
+    -fx-opacity: 1;
+}

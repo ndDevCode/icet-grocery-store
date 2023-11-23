@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.Glow?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="525.0" prefWidth="885.0" stylesheets="@css/globalStyles.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomerViewController">
+   <children>
+      <JFXTreeTableView fx:id="customerTable" layoutX="271.0" layoutY="144.0" prefHeight="355.0" prefWidth="600.0" style="-fx-border-color: black;" stylesheets="@css/globalStyles.css">
+         <styleClass>
+            <String fx:value="tree-table-cell" />
+            <String fx:value="table-view" />
+         </styleClass>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></JFXTreeTableView>
+      <Label layoutX="388.0" layoutY="14.0" prefHeight="30.0" prefWidth="164.0" styleClass="content-pane-background" stylesheets="@css/globalStyles.css" text="  Customer View">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+         <effect>
+            <Glow />
+         </effect>
+      </Label>
+      <MFXTextField fx:id="txtCusId" alignment="TOP_LEFT" floatingText="Customer ID" layoutX="75.0" layoutY="144.0" prefHeight="21.0" prefWidth="149.0" promptText="Enter ID" AnchorPane.leftAnchor="75.0">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor></MFXTextField>
+      <MFXTextField fx:id="txtCusName" alignment="TOP_LEFT" floatingText="Customer Name" layoutX="75.0" layoutY="200.0" prefHeight="21.0" prefWidth="149.0" promptText="Enter Name" AnchorPane.leftAnchor="75.0">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor></MFXTextField>
+      <MFXTextField fx:id="txtCusAddress" alignment="TOP_LEFT" floatingText="Customer Address" layoutX="75.0" layoutY="256.0" prefHeight="21.0" prefWidth="149.0" promptText="Enter Address" AnchorPane.leftAnchor="75.0">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor></MFXTextField>
+      <MFXTextField fx:id="txtCusSalary" alignment="TOP_LEFT" floatingText="Customer Salary" layoutX="75.0" layoutY="312.0" prefHeight="21.0" prefWidth="149.0" promptText="Enter Salary" AnchorPane.leftAnchor="75.0">
+         <cursor>
+            <Cursor fx:constant="TEXT" />
+         </cursor></MFXTextField>
+      <MFXButton fx:id="btnSave" depthLevel="LEVEL1" layoutX="75.0" layoutY="381.0" onAction="#btnSaveOnAction" prefHeight="31.0" prefWidth="149.0" rippleAnimateShadow="true" rippleAnimationSpeed="0.5" rippleColor="#8e1ec5" text="Save Customer" AnchorPane.leftAnchor="75.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></MFXButton>
+      <MFXButton fx:id="btnRefresh" alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" depthLevel="LEVEL1" layoutX="721.0" layoutY="101.0" onAction="#btnReloadOnAction" rippleAnimateShadow="true" rippleAnimationSpeed="0.5" rippleColor="#a610e0" text="Refresh Table" textAlignment="RIGHT" AnchorPane.rightAnchor="13.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></MFXButton>
+      <MFXButton fx:id="btnUpdate" depthLevel="LEVEL1" layoutX="75.0" layoutY="426.0" onAction="#btnUpdateOnAction" prefHeight="31.0" prefWidth="149.0" rippleAnimateShadow="true" rippleAnimationSpeed="0.5" rippleColor="#8e1ec5" text="Update Customer" AnchorPane.leftAnchor="75.0">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor></MFXButton>
+      <MFXTextField fx:id="txtSearch" floatingText="Search Table" floatingTextGap="2.0" graphicTextGap="5.0" layoutX="270.0" layoutY="86.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="200.0" />
+   </children>
+   <styleClass>
+      <String fx:value="content-pane-background" />
+      <String fx:value="background-radius" />
+   </styleClass>
+</AnchorPane>

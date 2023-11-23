@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mainAnchorPane" prefHeight="602.0" prefWidth="900.0" style="-fx-background-radius: 20;" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.DashboardFormController">
+   <children>
+      <AnchorPane fx:id="contentAnchorPane" layoutX="15.0" layoutY="79.0" prefHeight="520.0" prefWidth="885.0" styleClass="background-radius" stylesheets="@css/globalStyles.css" translateZ="-1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="79.0" />
+      <AnchorPane fx:id="sidePane" layoutX="-190.0" layoutY="79.0" prefHeight="523.0" prefWidth="240.0" styleClass="side-panel-background" stylesheets="@css/globalStyles.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="79.0">
+         <children>
+            <JFXButton fx:id="btnToggle" alignment="CENTER" buttonType="RAISED" focusTraversable="false" layoutX="135.0" layoutY="7.0" prefHeight="40.0" prefWidth="40.0" ripplerFill="#ffffff00" styleClass="side-panel-toggle-bg-img" stylesheets="@css/globalStyles.css" AnchorPane.rightAnchor="9.0" AnchorPane.topAnchor="10.0">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <font>
+                  <Font size="1.0" />
+               </font>
+               <opaqueInsets>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </opaqueInsets>
+            </JFXButton>
+            <JFXButton fx:id="btnCustomerView" alignment="BASELINE_LEFT" buttonType="RAISED" focusTraversable="false" layoutY="117.0" prefHeight="55.0" prefWidth="240.0" styleClass="side-menu-option" stylesheets="@css/globalStyles.css" text="Customer View">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <ripplerFill>
+                  <LinearGradient endX="0.674757281553398" endY="1.0" startX="0.4223300970873786" startY="0.44660194174757284">
+                     <stops>
+                        <Stop color="#0ad386" />
+                        <Stop color="#35d002" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </ripplerFill>
+            </JFXButton>
+            <JFXButton fx:id="btnItemsView" alignment="BASELINE_LEFT" buttonType="RAISED" focusTraversable="false" layoutY="172.0" prefHeight="55.0" prefWidth="240.0" styleClass="side-menu-option" stylesheets="@css/globalStyles.css" text="Items View">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <ripplerFill>
+                  <LinearGradient endX="0.674757281553398" endY="1.0" startX="0.4223300970873786" startY="0.44660194174757284">
+                     <stops>
+                        <Stop color="#0ad386" />
+                        <Stop color="#35d002" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </ripplerFill>
+            </JFXButton>
+            <JFXButton fx:id="btnDashboard" alignment="BASELINE_LEFT" buttonType="RAISED" focusTraversable="false" layoutY="62.0" prefHeight="55.0" prefWidth="240.0" styleClass="side-menu-option" stylesheets="@css/globalStyles.css" text="Dashboard">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <ripplerFill>
+                  <LinearGradient endX="0.674757281553398" endY="1.0" startX="0.4223300970873786" startY="0.44660194174757284">
+                     <stops>
+                        <Stop color="#0ad386" />
+                        <Stop color="#35d002" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </ripplerFill>
+            </JFXButton>
+            <JFXButton fx:id="btnPlaceOrder" alignment="BASELINE_LEFT" buttonType="RAISED" focusTraversable="false" layoutY="232.0" prefHeight="55.0" prefWidth="240.0" styleClass="side-menu-option" stylesheets="@css/globalStyles.css" text="Place Order">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+               <ripplerFill>
+                  <LinearGradient endX="0.674757281553398" endY="1.0" startX="0.4223300970873786" startY="0.44660194174757284">
+                     <stops>
+                        <Stop color="#0ad386" />
+                        <Stop color="#35d002" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </ripplerFill>
+            </JFXButton>
+            <VBox alignment="CENTER_LEFT" layoutX="7.0" layoutY="421.0" prefHeight="102.0" prefWidth="47.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <Circle fx:id="circleMinimize" fill="LIME" opacity="0.5" radius="10.0" stroke="#0fcd15" strokeType="INSIDE" styleClass="btn-hover">
+                     <VBox.margin>
+                        <Insets left="8.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Circle>
+                  <Circle fx:id="circleMaximize" fill="#1f93ff" layoutX="20.0" layoutY="20.0" opacity="0.5" radius="10.0" stroke="#895bf5" strokeType="INSIDE" styleClass="btn-hover">
+                     <VBox.margin>
+                        <Insets left="8.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Circle>
+                  <Circle fx:id="circleClose" fill="#ff2121" layoutX="20.0" layoutY="40.0" opacity="0.5" radius="10.0" stroke="#8d0404" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" styleClass="btn-hover">
+                     <VBox.margin>
+                        <Insets left="8.0" />
+                     </VBox.margin>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Circle>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="paneHeader" layoutY="-1.0" onMouseEntered="#paneOnMouseEntered" prefHeight="65.0" prefWidth="900.0" style="-fx-background-radius: 0 20 0 0;" styleClass="header-background" stylesheets="@css/globalStyles.css" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="-1.0">
+         <children>
+            <Label fx:id="lblTime" layoutX="707.0" layoutY="27.0" prefHeight="27.0" prefWidth="268.0" styleClass="header-date-time" stylesheets="@css/globalStyles.css" text="Time" textAlignment="CENTER" AnchorPane.rightAnchor="20.0">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="80.0" fitWidth="80.0" layoutX="-9.0" layoutY="1.0" opacity="0.86" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../assets/appLogo.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="102.0" layoutY="1.0" prefHeight="80.0" prefWidth="309.0" styleClass="header-title" stylesheets="@css/globalStyles.css" text="Grocery Store" textAlignment="CENTER">
+               <font>
+                  <Font size="44.0" />
+               </font>
+            </Label>
+         </children>
+         <cursor>
+            <Cursor fx:constant="CLOSED_HAND" />
+         </cursor>
+      </AnchorPane>
+   </children>
+</AnchorPane>
