@@ -17,7 +17,6 @@ public class AppInitializer extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException, ClassNotFoundException {
-
         Class.forName("db.DBConnection");
         Class.forName("controller.CustomerViewController");
         Class.forName("controller.ItemViewController");

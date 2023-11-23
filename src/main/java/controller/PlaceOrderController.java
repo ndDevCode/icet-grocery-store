@@ -14,10 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import model.PlaceOrderModel;
@@ -50,9 +47,6 @@ public class PlaceOrderController {
 
     @FXML
     private Label lblTotalAmount;
-
-    private MFXGenericDialog dialogContent;
-    private MFXStageDialog dialog;
 
     @FXML
     private MFXButton btnPlaceOrder;
@@ -88,6 +82,11 @@ public class PlaceOrderController {
                 try {
                     txtItemDesc.setText(placeOrderModel.getItemDescription(cmbxItemCode.getSelectedItem()));
                     txtUnitPrice.setText(Double.toString(placeOrderModel.getUnitPrice(cmbxItemCode.getSelectedItem())));
+                    String toolTipMsg = "Remaining Qty is "+
+                            Integer.toString(placeOrderModel.getQtyOnHand(cmbxItemCode.getSelectedItem()));
+                    Tooltip toolTip = new Tooltip(toolTipMsg);
+                    toolTip.setStyle("-fx-background-color: #cc4e5c");
+                    txtBuyQty.setTooltip(toolTip);
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
                 }

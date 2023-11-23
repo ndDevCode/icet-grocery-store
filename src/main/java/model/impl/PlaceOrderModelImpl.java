@@ -88,6 +88,16 @@ public class PlaceOrderModelImpl implements PlaceOrderModel {
     }
 
     @Override
+    public int getQtyOnHand(String code) throws SQLException {
+        String sql = "select qtyOnHand from item where code=?";
+        PreparedStatement pstm = connection.prepareStatement(sql);
+        pstm.setString(1,code);
+        ResultSet result = pstm.executeQuery();
+        result.next();
+        return result.getInt(1);
+    }
+
+    @Override
     public boolean placeOrder(ObservableList<PlaceOrderTm> orderItems, String customerId) throws SQLException {
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String orderId = getNextOrderId();
@@ -103,8 +113,11 @@ public class PlaceOrderModelImpl implements PlaceOrderModel {
         pstm.setString(1,order.getId());
         pstm.setString(2,order.getDate());
         pstm.setString(3,order.getCustomerId());
+
         int rsl = pstm.executeUpdate();
         int rsl2 = 0;
+        int rsl3 = 0;
+
         for (PlaceOrderTm orderItem:orderItems) {
             OrderDetailsDto orderDetail = new OrderDetailsDto(
                     orderId,
@@ -119,11 +132,18 @@ public class PlaceOrderModelImpl implements PlaceOrderModel {
             pstm2.setString(2,orderDetail.getItemCode());
             pstm2.setInt(3,orderDetail.getQty());
             pstm2.setDouble(4,orderDetail.getUnitPrice());
-
             rsl2 += pstm2.executeUpdate();
+
+            String sql3 = "UPDATE item SET qtyOnHand = qtyOnHand-? WHERE code=?";
+            PreparedStatement pstm3 = connection.prepareStatement(sql3);
+            pstm3.setInt(1,orderDetail.getQty());
+            pstm3.setString(2,orderDetail.getItemCode());
+            rsl3 += pstm3.executeUpdate();
+
+
         }
 
-        return (rsl+rsl2) == (orderItems.size()+1);
+        return (rsl+rsl2+rsl3) == (orderItems.size()*2+1);
     }
 
     private String getNextOrderId() throws SQLException {

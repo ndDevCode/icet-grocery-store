@@ -12,5 +12,6 @@ public interface PlaceOrderModel {
     String getCustomerName(String id) throws SQLException;
     String getItemDescription(String code) throws SQLException;
     double getUnitPrice(String code) throws SQLException;
+    int getQtyOnHand(String code) throws SQLException;
     boolean placeOrder(ObservableList<PlaceOrderTm> orderItems, String customerId) throws SQLException;
 }
