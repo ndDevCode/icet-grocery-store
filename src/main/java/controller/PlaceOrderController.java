@@ -4,12 +4,14 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import dto.CustomerDto;
+import dto.ItemDto;
+import dto.OrderDetailsDto;
+import dto.OrderDto;
 import dto.tm.PlaceOrderTm;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import io.github.palexdev.materialfx.dialogs.MFXGenericDialog;
-import io.github.palexdev.materialfx.dialogs.MFXStageDialog;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,10 +19,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import model.PlaceOrderModel;
-import model.impl.PlaceOrderModelImpl;
+import model.CustomerModel;
+import model.ItemModel;
+import model.OrderModel;
+import model.impl.CustomerModelImpl;
+import model.impl.ItemModelImpl;
+import model.impl.OrderModelImpl;
 
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlaceOrderController {
 
@@ -49,6 +59,9 @@ public class PlaceOrderController {
     private Label lblTotalAmount;
 
     @FXML
+    private Label lblOrderId;
+
+    @FXML
     private MFXButton btnPlaceOrder;
 
     @FXML
@@ -57,21 +70,37 @@ public class PlaceOrderController {
     @FXML
     private JFXTreeTableView<PlaceOrderTm> tblOrder;
 
-    private final PlaceOrderModel placeOrderModel = new PlaceOrderModelImpl();
+    //private final PlaceOrderModel placeOrderModel = new PlaceOrderModelImpl();
     private final ObservableList<PlaceOrderTm> orderItems = FXCollections.observableArrayList();
+    private List<CustomerDto> customers;
+    private List<ItemDto> items;
+
+    private CustomerModel customerModel = new CustomerModelImpl();
+    private ItemModel itemModel = new ItemModelImpl();
+    private OrderModel orderModel = new OrderModelImpl();
 
     public void initialize() throws SQLException {
 
         // Loading items to combo boxes and text boxes
-        cmbxCustomerId.setItems(placeOrderModel.getAllCustomerId());
-        cmbxItemCode.setItems(placeOrderModel.getAllItemCode());
+        try {
+            customers = customerModel.getAllCustomer();
+            items = itemModel.getAllItem();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        loadCustomerIds();
+        loadItemCodes();
+        setOrderId();
+
         cmbxCustomerId.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                try {
-                    txtCustomerName.setText(placeOrderModel.getCustomerName(cmbxCustomerId.getSelectedItem()));
-                    orderItems.clear();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                for (CustomerDto dto:customers) {
+                    if (dto.getId().equals(newValue)){
+                        clearFields();
+                        orderItems.clear();
+                        txtCustomerName.setText(dto.getName());
+                    }
                 }
             }
 
@@ -79,17 +108,18 @@ public class PlaceOrderController {
 
         cmbxItemCode.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                try {
-                    txtItemDesc.setText(placeOrderModel.getItemDescription(cmbxItemCode.getSelectedItem()));
-                    txtUnitPrice.setText(Double.toString(placeOrderModel.getUnitPrice(cmbxItemCode.getSelectedItem())));
-                    String toolTipMsg = "Remaining Qty is "+
-                            Integer.toString(placeOrderModel.getQtyOnHand(cmbxItemCode.getSelectedItem()));
-                    Tooltip toolTip = new Tooltip(toolTipMsg);
-                    toolTip.setStyle("-fx-background-color: #cc4e5c");
-                    txtBuyQty.setTooltip(toolTip);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                String toolTipMsg = null;
+                for (ItemDto dto:items) {
+                    if (dto.getCode().equals(newValue.toString())){
+                        txtItemDesc.setText(dto.getDescription());
+                        txtUnitPrice.setText(String.format("%.2f",dto.getUnitPrice()));
+                        toolTipMsg = "Remaining Qty is "+
+                                Integer.toString(dto.getQtyOnHand());
+                    }
                 }
+                Tooltip toolTip = new Tooltip(toolTipMsg);
+                toolTip.setStyle("-fx-background-color: #cc4e5c");
+                txtBuyQty.setTooltip(toolTip);
             }
         });
 
@@ -146,12 +176,58 @@ public class PlaceOrderController {
 
     @FXML
     void btnPlaceOrderOnAction() throws SQLException {
-        boolean isPlaced = placeOrderModel.placeOrder(orderItems, cmbxCustomerId.getSelectedItem());
-        if (isPlaced) {
-            new Alert(Alert.AlertType.INFORMATION,"Order Placed Successfully!").show();
+        List<OrderDetailsDto> list = new ArrayList<>();
+        for (PlaceOrderTm tm:orderItems) {
+            list.add(new OrderDetailsDto(
+                    lblOrderId.getText(),
+                    tm.getCode(),
+                    tm.getQty(),
+                    tm.getAmount()/tm.getQty()
+            ));
         }
-        orderItems.clear();
+
+        OrderDto dto = new OrderDto(
+                lblOrderId.getText(),
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern("YYYY-MM-dd")),
+                cmbxCustomerId.getValue().toString(),
+                list
+        );
+
+
+        try {
+            boolean isSaved = orderModel.saveOrder(dto);
+            if (isSaved){
+                new Alert(Alert.AlertType.INFORMATION, "Order Saved!").show();
+                setOrderId();
+            }else{
+                new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         clearFields();
+        items = itemModel.getAllItem();
+    }
+
+    private void setOrderId() {
+        try {
+            String id = orderModel.getLastOrder().getId();
+            if (id!=null){
+                int num = Integer.parseInt(id.split("[D]")[1]);
+                num++;
+                lblOrderId.setText(String.format("D%03d",num));
+            }else{
+                lblOrderId.setText("D001");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private void loadTable() {
@@ -178,5 +254,25 @@ public class PlaceOrderController {
         txtBuyQty.clear();
         tblOrder.refresh();
         lblTotalAmount.setText("0.00");
+    }
+
+    private void loadItemCodes() {
+        ObservableList list = FXCollections.observableArrayList();
+
+        for (ItemDto dto:items) {
+            list.add(dto.getCode());
+        }
+
+        cmbxItemCode.setItems(list);
+    }
+
+    private void loadCustomerIds() {
+        ObservableList list = FXCollections.observableArrayList();
+
+        for (CustomerDto dto:customers) {
+            list.add(dto.getId());
+        }
+
+        cmbxCustomerId.setItems(list);
     }
 }

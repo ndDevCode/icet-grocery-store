@@ -75,7 +75,7 @@
                         <Insets top="20.0" />
                      </GridPane.margin>
                   </GridPane>
-                    <Label alignment="CENTER" contentDisplay="CENTER" styleClass="content-pane-background" stylesheets="@css/globalStyles.css" text=" Place Order " textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                    <Label alignment="CENTER" contentDisplay="CENTER" style="-fx-background-radius: 20;" styleClass="content-pane-background" stylesheets="@css/globalStyles.css" text=" Place Order " textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                         <font>
                             <Font name="System Bold" size="20.0" />
                         </font>
@@ -113,6 +113,22 @@
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
+                  </Label>
+                  <Label contentDisplay="RIGHT" text="Order Id :" textAlignment="RIGHT" GridPane.rowIndex="4">
+                     <GridPane.margin>
+                        <Insets left="600.0" />
+                     </GridPane.margin>
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblOrderId" prefHeight="27.0" prefWidth="126.0" text="Label" GridPane.rowIndex="4">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                     <GridPane.margin>
+                        <Insets left="700.0" />
+                     </GridPane.margin>
                   </Label>
                </children>
             </GridPane>

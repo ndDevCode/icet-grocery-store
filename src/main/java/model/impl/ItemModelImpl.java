@@ -3,6 +3,7 @@ package model.impl;
 import db.DBConnection;
 import dto.CustomerDto;
 import dto.ItemDto;
+import dto.OrderDetailsDto;
 import model.CustomerModel;
 import model.ItemModel;
 
@@ -60,6 +61,21 @@ public class ItemModelImpl implements ItemModel {
         pstm.setString(1,itemCode);
 
         return pstm.executeUpdate()>0;
+    }
+
+    @Override
+    public boolean updateAllItems(List<OrderDetailsDto> list) throws SQLException {
+        String sql = "UPDATE item SET qtyOnHand = qtyOnHand-? WHERE code=?";
+        PreparedStatement pstm = connection.prepareStatement(sql);
+
+        for (OrderDetailsDto dto:list) {
+            pstm.setInt(1,dto.getQty());
+            pstm.setString(2,dto.getItemCode());
+            if (!(pstm.executeUpdate()>0)){
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
