@@ -51,6 +51,11 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </MFXButton>
+            <MFXButton fx:id="btnReport" alignment="CENTER" contentDisplay="CENTER" depthLevel="LEVEL1" layoutX="578.0" layoutY="83.0" onAction="#btnGetReportOnAction" prefHeight="47.0" prefWidth="116.0" rippleAnimateShadow="true" rippleAnimationSpeed="0.5" rippleColor="#bb12e3" text="Report" textAlignment="RIGHT">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </MFXButton>
          </children>
       </AnchorPane>
     </children>

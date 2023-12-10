@@ -57,6 +57,11 @@
             <Cursor fx:constant="HAND" />
          </cursor></MFXButton>
       <MFXTextField fx:id="txtSearch" floatingText="Search Table" floatingTextGap="2.0" graphicTextGap="5.0" layoutX="270.0" layoutY="86.0" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="50.0" prefWidth="200.0" />
+      <MFXButton fx:id="btnReport" alignment="BOTTOM_RIGHT" contentDisplay="RIGHT" depthLevel="LEVEL1" layoutX="673.0" layoutY="101.0" onAction="#btnGetReportOnAction" rippleAnimateShadow="true" rippleAnimationSpeed="0.5" rippleColor="#a610e0" text="Report" textAlignment="RIGHT">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </MFXButton>
    </children>
    <styleClass>
       <String fx:value="content-pane-background" />

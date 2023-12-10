@@ -70,7 +70,6 @@ public class PlaceOrderController {
     @FXML
     private JFXTreeTableView<PlaceOrderTm> tblOrder;
 
-    //private final PlaceOrderModel placeOrderModel = new PlaceOrderModelImpl();
     private final ObservableList<PlaceOrderTm> orderItems = FXCollections.observableArrayList();
     private List<CustomerDto> customers;
     private List<ItemDto> items;
@@ -79,7 +78,7 @@ public class PlaceOrderController {
     private ItemModel itemModel = new ItemModelImpl();
     private OrderModel orderModel = new OrderModelImpl();
 
-    public void initialize() throws SQLException {
+    public void initialize() {
 
         // Loading items to combo boxes and text boxes
         try {

@@ -24,6 +24,10 @@ import model.CustomerModel;
 import model.ItemModel;
 import model.impl.CustomerModelImpl;
 import model.impl.ItemModelImpl;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -211,6 +215,18 @@ public class ItemViewController {
             new Alert(Alert.AlertType.INFORMATION,"Item Updated!").show();
             loadTableData();
             clearFields();
+        }
+    }
+
+    @FXML
+    private void btnGetReportOnAction(){
+        try {
+            JasperDesign design = JRXmlLoader.load("src/main/resources/reports/itemRP.jrxml");
+            JasperReport jasperReport = JasperCompileManager.compileReport(design);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, DBConnection.getInstance().getConnection());
+            JasperViewer.viewReport(jasperPrint,false);
+        } catch (JRException | ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

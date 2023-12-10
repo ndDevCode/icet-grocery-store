@@ -12,9 +12,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class OrderModelImpl implements OrderModel {
-    private OrderDetailModel orderDetailModel = new OrderDetailModelImpl();
-    private ItemModel itemModel = new ItemModelImpl();
-    private static Connection connection;
+    private final OrderDetailModel orderDetailModel = new OrderDetailModelImpl();
+    private final ItemModel itemModel = new ItemModelImpl();
+    private static final Connection connection;
+
 
     static {
         //----Initialize the db Connection
@@ -23,8 +24,8 @@ public class OrderModelImpl implements OrderModel {
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
+
     @Override
     public boolean saveOrder(OrderDto dto) throws SQLException {
         try {
@@ -36,7 +37,6 @@ public class OrderModelImpl implements OrderModel {
             pstm.setString(3, dto.getCustomerId());
 
             if (pstm.executeUpdate() > 0) {
-
                 boolean isDetailsSaved = orderDetailModel.saveOrderDetails(dto.getList());
                 boolean isItemsUpdated = itemModel.updateAllItems(dto.getList());
                 if (isDetailsSaved && isItemsUpdated) {

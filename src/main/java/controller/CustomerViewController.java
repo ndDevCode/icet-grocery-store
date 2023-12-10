@@ -21,6 +21,10 @@ import dto.CustomerDto;
 import dto.tm.CustomerTm;
 import model.CustomerModel;
 import model.impl.CustomerModelImpl;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -54,6 +58,9 @@ public class CustomerViewController {
 
     @FXML
     private MFXButton btnUpdate;
+
+    @FXML
+    private MFXButton btnReport;
 
     @FXML
     private JFXTreeTableView<CustomerTm> customerTable;
@@ -200,6 +207,19 @@ public class CustomerViewController {
         customerTable.refresh();
         clearFields();
     }
+
+    @FXML
+    private void btnGetReportOnAction(){
+        try {
+            JasperDesign design = JRXmlLoader.load("src/main/resources/reports/customerRP.jrxml");
+            JasperReport jasperReport = JasperCompileManager.compileReport(design);
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, DBConnection.getInstance().getConnection());
+            JasperViewer.viewReport(jasperPrint,false);
+        } catch (JRException | ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private void clearFields() {
         customerTable.refresh();
