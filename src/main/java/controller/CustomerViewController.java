@@ -1,14 +1,17 @@
 package controller;
 
+import bo.BoFactory;
+import bo.custom.CustomerBo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import dao.util.BoType;
 import db.DBConnection;
+import dto.CustomerDto;
+import dto.tm.CustomerTm;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,21 +20,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import dto.CustomerDto;
-import dto.tm.CustomerTm;
-import model.CustomerModel;
-import model.impl.CustomerModelImpl;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class CustomerViewController {
 
@@ -65,10 +60,10 @@ public class CustomerViewController {
     @FXML
     private JFXTreeTableView<CustomerTm> customerTable;
 
-    private final CustomerModel customerModel = new CustomerModelImpl();
+    private final CustomerBo customerBo = BoFactory.getInstance().getBo(BoType.CUSTOMER);
 
 
-    public void initialize() throws SQLException {
+    public void initialize() throws SQLException, ClassNotFoundException {
         //---- Declaration of Table Cols
         TreeTableColumn colId = new TreeTableColumn<>("Customer ID");
         TreeTableColumn colName = new TreeTableColumn<>("Customer Name");
@@ -125,9 +120,9 @@ public class CustomerViewController {
     }
 
     @FXML
-    private void loadTableData() throws SQLException {
+    private void loadTableData() throws SQLException, ClassNotFoundException {
         ObservableList<CustomerTm> tmListCustomer = FXCollections.observableArrayList();
-        List<CustomerDto> customerDtoList = customerModel.getAllCustomer();
+        List<CustomerDto> customerDtoList = customerBo.allCustomers();
 
         for(CustomerDto dto:customerDtoList){
             JFXButton btn = new JFXButton("❌");
@@ -141,7 +136,7 @@ public class CustomerViewController {
             btn.setOnAction(actionEvent -> {
                 try {
                     deleteCustomer(customer.getId());
-                } catch (SQLException e) {
+                } catch (SQLException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
             });
@@ -153,9 +148,9 @@ public class CustomerViewController {
         customerTable.setShowRoot(false);
     }
 
-    private void deleteCustomer(String id) throws SQLException {
+    private void deleteCustomer(String id) throws SQLException, ClassNotFoundException {
 
-        if (customerModel.deleteCustomer(id)){
+        if (customerBo.deleteCustomer(id)){
             new Alert(Alert.AlertType.INFORMATION,"Customer Deleted!").show();
             loadTableData();
             customerTable.refresh();
@@ -165,7 +160,7 @@ public class CustomerViewController {
     }
 
     @FXML
-    private void btnSaveOnAction() throws SQLException {
+    private void btnSaveOnAction() throws SQLException, ClassNotFoundException {
 
         CustomerDto customerDto = new CustomerDto(
                 txtCusId.getText(),
@@ -174,7 +169,7 @@ public class CustomerViewController {
                 Double.parseDouble(txtCusSalary.getText())
         );
 
-        if (customerModel.saveCustomer(customerDto)){
+        if (customerBo.saveCustomer(customerDto)){
             new Alert(Alert.AlertType.INFORMATION,"Customer Saved!").show();
             loadTableData();
             clearFields();
@@ -184,7 +179,7 @@ public class CustomerViewController {
     }
 
     @FXML
-    private void btnUpdateOnAction() throws SQLException {
+    private void btnUpdateOnAction() throws SQLException, ClassNotFoundException {
         CustomerDto customerDto = new CustomerDto(
                 txtCusId.getText(),
                 txtCusName.getText(),
@@ -192,7 +187,7 @@ public class CustomerViewController {
                 Double.parseDouble(txtCusSalary.getText())
         );
 
-        if (customerModel.updateCustomer(customerDto)){
+        if (customerBo.updateCustomer(customerDto)){
             new Alert(Alert.AlertType.INFORMATION,"Customer Updated!").show();
             loadTableData();
             clearFields();
@@ -202,7 +197,7 @@ public class CustomerViewController {
     }
 
     @FXML
-    private void btnReloadOnAction(ActionEvent event) throws SQLException {
+    private void btnReloadOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         loadTableData();
         customerTable.refresh();
         clearFields();
@@ -215,7 +210,7 @@ public class CustomerViewController {
             JasperReport jasperReport = JasperCompileManager.compileReport(design);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, DBConnection.getInstance().getConnection());
             JasperViewer.viewReport(jasperPrint,false);
-        } catch (JRException | ClassNotFoundException | SQLException e) {
+        } catch (JRException e) {
             throw new RuntimeException(e);
         }
     }

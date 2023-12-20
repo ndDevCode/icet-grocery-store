@@ -1,14 +1,18 @@
 package controller;
 
+import bo.BoFactory;
+import bo.custom.ItemBo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import dao.util.BoType;
 import db.DBConnection;
+import dto.ItemDto;
+import dto.tm.CustomerTm;
+import dto.tm.ItemTm;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,24 +21,13 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
-import dto.ItemDto;
-import dto.tm.CustomerTm;
-import dto.tm.ItemTm;
-import model.CustomerModel;
-import model.ItemModel;
-import model.impl.CustomerModelImpl;
-import model.impl.ItemModelImpl;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class ItemViewController {
 
@@ -65,22 +58,10 @@ public class ItemViewController {
     @FXML
     private MFXButton btnUpdate;
 
-    private static final Connection connection;
-
-    private final ItemModel itemModel  = new ItemModelImpl();
-
-    static {
-        //----Initialize the db Connection
-        try {
-            connection = DBConnection.getInstance().getConnection();
-        } catch (SQLException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
+    private final ItemBo itemBo = BoFactory.getInstance().getBo(BoType.ITEM);
 
 
-    public void initialize() throws SQLException {
+    public void initialize() throws SQLException, ClassNotFoundException {
 
         //---- Declaration of Table Cols
         TreeTableColumn colCode = new TreeTableColumn<>("Item Code");
@@ -135,10 +116,10 @@ public class ItemViewController {
         }
     }
 
-    private void loadTableData() throws SQLException {
+    private void loadTableData() throws SQLException, ClassNotFoundException {
         ObservableList<ItemTm> tmListItem = FXCollections.observableArrayList();
 
-        List<ItemDto> itemDtoList = itemModel.getAllItem();
+        List<ItemDto> itemDtoList = itemBo.getAllItem();
 
         for(ItemDto dto:itemDtoList){
             JFXButton btn = new JFXButton("❌");
@@ -151,8 +132,8 @@ public class ItemViewController {
 
             btn.setOnAction(actionEvent -> {
                 try {
-                    deleteCustomer(item.getCode());
-                } catch (SQLException e) {
+                    deleteItem(item.getCode());
+                } catch (SQLException | ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
             });
@@ -165,9 +146,9 @@ public class ItemViewController {
         itemTable.setShowRoot(false);
     }
 
-    private void deleteCustomer(String code) throws SQLException {
+    private void deleteItem(String code) throws SQLException, ClassNotFoundException {
 
-        if (itemModel.deleteItem(code)){
+        if (itemBo.deleteItem(code)){
             new Alert(Alert.AlertType.INFORMATION,"Item Deleted!").show();
         }else{
             new Alert(Alert.AlertType.ERROR,"An Error Occurred!").show();
@@ -178,14 +159,14 @@ public class ItemViewController {
     }
 
     @FXML
-    private void btnReloadOnAction(ActionEvent event) throws SQLException {
+    private void btnReloadOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         loadTableData();
         itemTable.refresh();
         clearFields();
     }
 
     @FXML
-    private void btnSaveOnAction(ActionEvent event) throws SQLException {
+    private void btnSaveOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         ItemDto itemDto = new ItemDto(
                 txtItemCode.getText(),
                 txtItemDesc.getText(),
@@ -193,7 +174,7 @@ public class ItemViewController {
                 Integer.parseInt(txtQtyOnHand.getText())
         );
 
-        if (itemModel.saveItem(itemDto)){
+        if (itemBo.saveItem(itemDto)){
             new Alert(Alert.AlertType.INFORMATION,"Item Saved!").show();
             loadTableData();
             clearFields();
@@ -203,7 +184,7 @@ public class ItemViewController {
     }
 
     @FXML
-    private void btnUpdateOnAction(ActionEvent event) throws SQLException {
+    private void btnUpdateOnAction(ActionEvent event) throws SQLException, ClassNotFoundException {
         ItemDto itemDto = new ItemDto(
                 txtItemCode.getText(),
                 txtItemDesc.getText(),
@@ -211,7 +192,7 @@ public class ItemViewController {
                 Integer.parseInt(txtQtyOnHand.getText())
         );
 
-        if (itemModel.updateItem(itemDto)){
+        if (itemBo.updateItem(itemDto)){
             new Alert(Alert.AlertType.INFORMATION,"Item Updated!").show();
             loadTableData();
             clearFields();
@@ -225,7 +206,7 @@ public class ItemViewController {
             JasperReport jasperReport = JasperCompileManager.compileReport(design);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, null, DBConnection.getInstance().getConnection());
             JasperViewer.viewReport(jasperPrint,false);
-        } catch (JRException | ClassNotFoundException | SQLException e) {
+        } catch (JRException e) {
             throw new RuntimeException(e);
         }
     }

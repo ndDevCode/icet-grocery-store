@@ -1,9 +1,14 @@
 package controller;
 
+import bo.BoFactory;
+import bo.custom.CustomerBo;
+import bo.custom.ItemBo;
+import bo.custom.OrderBo;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import dao.util.BoType;
 import dto.CustomerDto;
 import dto.ItemDto;
 import dto.OrderDetailsDto;
@@ -19,12 +24,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import model.CustomerModel;
-import model.ItemModel;
-import model.OrderModel;
-import model.impl.CustomerModelImpl;
-import model.impl.ItemModelImpl;
-import model.impl.OrderModelImpl;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -74,17 +73,17 @@ public class PlaceOrderController {
     private List<CustomerDto> customers;
     private List<ItemDto> items;
 
-    private CustomerModel customerModel = new CustomerModelImpl();
-    private ItemModel itemModel = new ItemModelImpl();
-    private OrderModel orderModel = new OrderModelImpl();
+    private CustomerBo customerBo = BoFactory.getInstance().getBo(BoType.CUSTOMER);
+    private ItemBo itemBo = BoFactory.getInstance().getBo(BoType.ITEM);
+    private OrderBo orderBo = BoFactory.getInstance().getBo(BoType.ORDER);
 
-    public void initialize() {
+    public void initialize() throws SQLException, ClassNotFoundException {
 
         // Loading items to combo boxes and text boxes
         try {
-            customers = customerModel.getAllCustomer();
-            items = itemModel.getAllItem();
-        } catch (SQLException e) {
+            customers = customerBo.allCustomers();
+            items = itemBo.getAllItem();
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -94,8 +93,8 @@ public class PlaceOrderController {
 
         cmbxCustomerId.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
-                for (CustomerDto dto:customers) {
-                    if (dto.getId().equals(newValue)){
+                for (CustomerDto dto : customers) {
+                    if (dto.getId().equals(newValue)) {
                         clearFields();
                         orderItems.clear();
                         txtCustomerName.setText(dto.getName());
@@ -108,11 +107,11 @@ public class PlaceOrderController {
         cmbxItemCode.valueProperty().addListener((observableValue, oldValue, newValue) -> {
             if (newValue != null) {
                 String toolTipMsg = null;
-                for (ItemDto dto:items) {
-                    if (dto.getCode().equals(newValue.toString())){
+                for (ItemDto dto : items) {
+                    if (dto.getCode().equals(newValue.toString())) {
                         txtItemDesc.setText(dto.getDescription());
-                        txtUnitPrice.setText(String.format("%.2f",dto.getUnitPrice()));
-                        toolTipMsg = "Remaining Qty is "+
+                        txtUnitPrice.setText(String.format("%.2f", dto.getUnitPrice()));
+                        toolTipMsg = "Remaining Qty is " +
                                 Integer.toString(dto.getQtyOnHand());
                     }
                 }
@@ -174,14 +173,14 @@ public class PlaceOrderController {
     }
 
     @FXML
-    void btnPlaceOrderOnAction() throws SQLException {
+    void btnPlaceOrderOnAction() throws SQLException, ClassNotFoundException {
         List<OrderDetailsDto> list = new ArrayList<>();
-        for (PlaceOrderTm tm:orderItems) {
+        for (PlaceOrderTm tm : orderItems) {
             list.add(new OrderDetailsDto(
                     lblOrderId.getText(),
                     tm.getCode(),
                     tm.getQty(),
-                    tm.getAmount()/tm.getQty()
+                    tm.getAmount() / tm.getQty()
             ));
         }
 
@@ -194,11 +193,11 @@ public class PlaceOrderController {
 
 
         try {
-            boolean isSaved = orderModel.saveOrder(dto);
-            if (isSaved){
+            boolean isSaved = orderBo.saveOrder(dto);
+            if (isSaved) {
                 new Alert(Alert.AlertType.INFORMATION, "Order Saved!").show();
                 setOrderId();
-            }else{
+            } else {
                 new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
             }
         } catch (SQLException e) {
@@ -208,25 +207,16 @@ public class PlaceOrderController {
         }
 
         clearFields();
-        items = itemModel.getAllItem();
+        items = itemBo.getAllItem();
     }
 
-    private void setOrderId() {
-        try {
-            String id = orderModel.getLastOrder().getId();
-            if (id!=null){
-                int num = Integer.parseInt(id.split("[D]")[1]);
-                num++;
-                lblOrderId.setText(String.format("D%03d",num));
-            }else{
-                lblOrderId.setText("D001");
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+    private void setOrderId() throws SQLException, ClassNotFoundException {
+        String id = orderBo.generateId();
+        if (id != null) {
+            lblOrderId.setText(id);
+        } else {
+            lblOrderId.setText("D001");
         }
-
     }
 
     private void loadTable() {
@@ -258,7 +248,7 @@ public class PlaceOrderController {
     private void loadItemCodes() {
         ObservableList list = FXCollections.observableArrayList();
 
-        for (ItemDto dto:items) {
+        for (ItemDto dto : items) {
             list.add(dto.getCode());
         }
 
@@ -268,7 +258,7 @@ public class PlaceOrderController {
     private void loadCustomerIds() {
         ObservableList list = FXCollections.observableArrayList();
 
-        for (CustomerDto dto:customers) {
+        for (CustomerDto dto : customers) {
             list.add(dto.getId());
         }
 
