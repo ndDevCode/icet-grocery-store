@@ -1,47 +1,63 @@
 package dao.custom.impl;
 
 import dao.util.CrudUtil;
+import dao.util.HibernateUtil;
+import dto.OrderDetailsDto;
 import dto.OrderDto;
 import dao.custom.ItemDao;
 import dao.custom.OrderDetailDao;
 import dao.custom.OrderDao;
-import entity.OrderDetail;
-import entity.Orders;
+import entity.*;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
+import javax.persistence.NoResultException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 public class OrderDaoImpl implements OrderDao {
-    private final OrderDetailDao orderDetailDao = new OrderDetailDaoImpl();
-    private final ItemDao itemDao = new ItemDaoImpl();
-
     @Override
-    public boolean save(Orders entity, List<OrderDetail> orderDetailList) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO orders VALUES(?,?,?)";
+    public boolean save(OrderDto dto) throws SQLException, ClassNotFoundException {
+        Session session = HibernateUtil.getSession();
+        Transaction transaction = session.beginTransaction();
+        Orders order = new Orders(
+                dto.getId(),
+                dto.getDate()
+        );
+        order.setCustomer(session.find(Customer.class,dto.getCustomerId()));
+        session.save(order);
 
-        if (CrudUtil.execute(sql, entity.getId(), entity.getDate(), entity.getCustomerId())) {
-            boolean isDetailsSaved = orderDetailDao.saveAll(orderDetailList);
-            boolean isItemsUpdated = itemDao.updateAll(orderDetailList);
-            if (isDetailsSaved && isItemsUpdated) {
-                return true;
-            }
+        List<OrderDetailsDto> list = dto.getList(); //dto type
+
+        for (OrderDetailsDto detailDto:list) {
+            OrderDetail orderDetail = new OrderDetail(
+                    new OrderDetailsKey(detailDto.getOrderId(), detailDto.getItemCode()),
+                    session.find(Item.class, detailDto.getItemCode()),
+                    order,
+                    detailDto.getQty(),
+                    detailDto.getUnitPrice()
+            );
+            session.save(orderDetail);
         }
-        return false;
+
+        transaction.commit();
+        session.close();
+        return true;
     }
 
     @Override
     public Orders getLastOrder() throws SQLException, ClassNotFoundException {
-        String sql = "SELECT * FROM orders ORDER BY id DESC LIMIT 1";
-        ResultSet resultSet = CrudUtil.execute(sql);
-        if (resultSet.next()) {
-            return new Orders(
-                    resultSet.getString(1),
-                    resultSet.getString(2),
-                    resultSet.getString(3)
-            );
+        Session session = HibernateUtil.getSession();
+        Query query = session.createQuery("FROM Orders o ORDER BY o.id DESC");
+        query.setMaxResults(1);
+        try {
+            return (Orders) query.getSingleResult();
+        }catch (NoResultException e){
+            return null;
         }
-        return null;
+
     }
 
     @Override

@@ -208,6 +208,7 @@ public class PlaceOrderController {
 
         clearFields();
         items = itemBo.getAllItem();
+        orderItems.clear();
     }
 
     private void setOrderId() throws SQLException, ClassNotFoundException {

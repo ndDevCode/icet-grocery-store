@@ -12,14 +12,14 @@ import java.util.List;
 public class OrderDetailDaoImpl implements OrderDetailDao {
     @Override
     public boolean saveAll(List<OrderDetail> list) throws SQLException, ClassNotFoundException {
-        String sql = "INSERT INTO orderdetail VALUES(?,?,?,?)";
-        PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
-
-        for (OrderDetail entity:list) {
-            if (!(Boolean) CrudUtil.execute(sql,entity.getOrderId(),entity.getItemCode(),entity.getQty(),entity.getUnitPrice())){
-                return false;
-            }
-        }
+//        String sql = "INSERT INTO orderdetail VALUES(?,?,?,?)";
+//        PreparedStatement pstm = DBConnection.getInstance().getConnection().prepareStatement(sql);
+//
+//        for (OrderDetail entity:list) {
+//            if (!(Boolean) CrudUtil.execute(sql,entity.getOrderId(),entity.getItemCode(),entity.getQty(),entity.getUnitPrice())){
+//                return false;
+//            }
+//        }
         return true;
     }
 
